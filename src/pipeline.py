@@ -432,6 +432,7 @@ def _finalize_atlas(out_dir: Path) -> None:
 
 
 def main():
+    """CLI entry point for the image-to-voxel pipeline."""
     parser = argparse.ArgumentParser(
         description="Image-to-Voxel Pipeline: convert images to 3D voxel assets",
         formatter_class=argparse.RawDescriptionHelpFormatter,

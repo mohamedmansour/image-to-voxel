@@ -1,4 +1,4 @@
-# Copilot Instructions for `scripts/image_to_voxel`
+# Copilot Instructions for Image-to-Voxel Pipeline
 
 ## Build, test, and lint commands
 
@@ -17,13 +17,13 @@ pip install omegaconf einops rtree xatlas moderngl imageio
 ```bash
 # Main pipeline (single asset)
 source .venv/bin/activate
-python pipeline.py --emoji "🐶" --resolution 32
+python -m src.pipeline --emoji "🐶" --resolution 32
 ```
 
 ```bash
 # "Single test" style stage-level smoke run
 source .venv/bin/activate
-python voxelize.py mesh.obj --resolution 32 --output voxels.json --name "sample"
+python -m src.voxelize mesh.obj --resolution 32 --output voxels.json --name "sample"
 ```
 
 ## High-level architecture

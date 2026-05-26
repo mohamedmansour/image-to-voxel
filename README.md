@@ -5,8 +5,6 @@ Converts any image (or emoji) into a 3D voxelized mesh for use in the Smash game
 ## Setup (one-time)
 
 ```bash
-cd scripts/image_to_voxel
-
 # Create virtual environment and install dependencies
 python3 -m venv .venv
 source .venv/bin/activate
@@ -27,38 +25,37 @@ The TripoSR model weights (~1.7 GB) are downloaded automatically from Hugging Fa
 Always activate the venv first:
 
 ```bash
-cd scripts/image_to_voxel
 source .venv/bin/activate
 ```
 
 ### Single emoji
 
 ```bash
-python pipeline.py --emoji "🐶" --resolution 32
+python -m src.pipeline --emoji "🐶" --resolution 32
 ```
 
 ### Single image (any PNG/JPG)
 
 ```bash
-python pipeline.py --image ./my_sprite.png --name "hero" --resolution 32
+python -m src.pipeline --image ./my_sprite.png --name "hero" --resolution 32
 ```
 
 ### Batch all game emojis
 
 ```bash
-python pipeline.py --batch-emojis --resolution 32
+python -m src.pipeline --batch-emojis --resolution 32
 ```
 
 ### Batch specific categories
 
 ```bash
-python pipeline.py --batch-emojis --categories animals food --resolution 32
+python -m src.pipeline --batch-emojis --categories animals food --resolution 32
 ```
 
 ### Higher resolution
 
 ```bash
-python pipeline.py --emoji "🐶" --resolution 64
+python -m src.pipeline --emoji "🐶" --resolution 64
 ```
 
 ## Re-running / Regenerating
@@ -67,14 +64,14 @@ The pipeline supports **resume by default** — it skips emojis that already hav
 
 ```bash
 # Resume from where it stopped (skips already-processed)
-python pipeline.py --batch-emojis --resolution 32
+python -m src.pipeline --batch-emojis --resolution 32
 
 # Force re-process everything (no resume)
-python pipeline.py --batch-emojis --resolution 32 --no-resume
+python -m src.pipeline --batch-emojis --resolution 32 --no-resume
 
 # Clear all output and start fresh
 rm -rf output/
-python pipeline.py --batch-emojis --resolution 32
+python -m src.pipeline --batch-emojis --resolution 32
 ```
 
 The pipeline automatically copies the atlas to `public/voxel_assets/voxel_atlas.json` when finished.
@@ -112,25 +109,6 @@ Batch runs show a single-line progress bar with all 3 stages:
   ████████░░░░░░░░░░░░  40% │ 📋 225/225 → 🖥️  100/225 → 🧊 90/225 │ ⏱️  450s (ETA 675s) │ 🐶
 ```
 
-## Loading in the Game
-
-The game loads voxel assets automatically at startup:
-
-1. `src/voxelLoader.ts` fetches `/voxel_assets/voxel_atlas.json`
-2. `src/voxelFactory.ts` checks for voxel data when creating emoji meshes
-3. If voxel data exists → renders as 3D voxel mesh with vertex colors + flat shading
-4. If not → falls back to the flat textured cube
-
-### Dev server
-
-The dev server (`server.ts`) uses `Bun.serve()` with HTML imports and serves `public/` as static assets:
-
-```bash
-pnpm dev   # runs bun --hot server.ts on port 3000
-```
-
-For production, deploy `public/voxel_assets/` to your static host. The loader fetches from `/voxel_assets/voxel_atlas.json` by default — pass a custom URL to `preloadVoxelAtlas()` if hosted elsewhere.
-
 ## Pipeline Stages
 
 ```
@@ -148,16 +126,16 @@ Image → Prepare+Stylize → TripoSR (Image-to-3D) → Voxelize → Export JSON
 
 ```bash
 # Stage 1: Prepare image
-python prepare_image.py --emoji "🍕" --output prepared.png
+python -m src.prepare_image --emoji "🍕" --output prepared.png
 
 # Stage 2: Image to mesh
-python image_to_mesh.py prepared.png --output mesh.obj
+python -m src.image_to_mesh prepared.png --output mesh.obj
 
 # Stage 3: Voxelize mesh
-python voxelize.py mesh.obj --resolution 32 --output voxels.json --name "🍕"
+python -m src.voxelize mesh.obj --resolution 32 --output voxels.json --name "🍕"
 
 # Stage 4: Build atlas from all individual JSONs
-python export_voxels.py output/ --output ../../public/voxel_assets/voxel_atlas.json
+python -m src.export_voxels output/ --output ../../public/voxel_assets/voxel_atlas.json
 ```
 
 ## CLI Options
