@@ -1,0 +1,17 @@
+torch>=2.1
+torchvision
+transformers>=4.35
+Pillow>=10.0
+trimesh>=4.0
+numpy
+scipy
+huggingface_hub
+tqdm
+rembg
+onnxruntime
+omegaconf==2.3.0
+einops
+rtree
+xatlas
+moderngl
+imageio
